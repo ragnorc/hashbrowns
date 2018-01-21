@@ -3,16 +3,19 @@ import numpy as np
 import pandas as pd
 
 
-def physical_matrix(info_line, unavailable):
+def matrix_maker(info_line, unavailable):
     """ Create numpy matrix with 0s and unavailable slots with 1st and 2nd line as args"""
 
     # Numpy 0 matrix for rows + cols ; 1 = unavailable
     server_matrix = np.zeros((info_line.iloc[0], info_line.iloc[1]))  # Shape = (16, 100)
 
-    # Change unavailable to 1:
-    server_matrix[unavailable.iloc[0]][unavailable.iloc[1]] = 1
-    
-    print(server_matrix[unavailable.iloc[0]])
+    # For loop for all unavailable:
+    for i in range(0, info_line.iloc[2]):
+
+        # Change unavailable to 1:
+        server_matrix[unavailable.iloc[i][0]][unavailable.iloc[i][1]] = 1
+
+    print(server_matrix)
 
 
 def data_parser():
@@ -23,13 +26,16 @@ def data_parser():
 
     # Extract line with info + int conversion:
     info_line = input_data.iloc[0].astype(int)
-    unavailable = input_data.iloc[1].dropna(how='all').astype(int)  # still had NaN
+    # unavailable = input_data.iloc[info_line[1::info_line[2]]].dropna(how='all').astype(int)  # still had NaN
 
-    # Remove info_line + unavailable from df:
-    input_data.drop([input_data.index[0], input_data.index[1]], inplace=True)
+    # Remove info_line from df:
+    input_data.drop([input_data.index[0]], inplace=True)
 
     # Reshape data by removing NaN:
     input_data.dropna(axis=1, how='all', inplace=True)
+
+    # Convert to integer:
+    input_data = input_data.astype(int)
 
     # Reset index:
     input_data.reset_index(drop=True, inplace=True)
@@ -37,11 +43,14 @@ def data_parser():
     # Add headers:
     input_data.columns = ['Rows', 'Slots']
 
-    # Convert to integer:
-    input_data = input_data.astype(int)
+    # Select unavailable (no need for -1 as df is re-indexed)
+    unavailable = input_data.iloc[0:info_line[2]]  # RangeIndex: 80 entries, 0 to 79
+
+    # Redefine input_data with servers to be placed:
+    input_data = input_data.iloc[info_line[2]:]
 
     # Create numpy matrix:
-    physical_matrix(info_line, unavailable)
+    matrix_maker(info_line, unavailable)
 
 
 if __name__ == "__main__":
