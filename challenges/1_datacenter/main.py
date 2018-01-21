@@ -15,7 +15,7 @@ def matrix_maker(info_line, unavailable):
         # Change unavailable to 1:
         server_matrix[unavailable.iloc[i][0]][unavailable.iloc[i][1]] = 1
 
-    print(server_matrix)
+    return server_matrix
 
 
 def data_parser():
@@ -50,7 +50,9 @@ def data_parser():
     input_data = input_data.iloc[info_line[2]:]
 
     # Create numpy matrix:
-    matrix_maker(info_line, unavailable)
+    dc_matrix = matrix_maker(info_line, unavailable)
+
+
 
 
 if __name__ == "__main__":
