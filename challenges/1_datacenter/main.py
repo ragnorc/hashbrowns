@@ -6,14 +6,19 @@ import pandas as pd
 def physical_matrix(info_line, unavailable):
     """ Create numpy matrix with 0s and unavailable slots with 1st and 2nd line as args"""
 
-    # Numpy 0 matrix for rows + cols ; "x" = unavailable
-    server_matrix = np.zeros((info_line.iloc[0], info_line.iloc[1]))
+    # Numpy 0 matrix for rows + cols ; 1 = unavailable
+    server_matrix = np.zeros((info_line.iloc[0], info_line.iloc[1]))  # Shape = (16, 100)
+
+    # Change unavailable to 1:
+    server_matrix[unavailable.iloc[0]][unavailable.iloc[1]] = 1
+    
+    print(server_matrix[unavailable.iloc[0]])
 
 
 def data_parser():
     """ Parses the data file and calls function depending on the input line """
 
-    # Read data in pandas df and apply "SLots" and "Rows" as headers:
+    # Read data in pandas df and apply "Slots" and "Rows" as headers:
     input_data = pd.read_csv('dc.in', delim_whitespace=True, header=None)  # Line 0 = "x"
 
     # Extract line with info + int conversion:
@@ -30,7 +35,7 @@ def data_parser():
     input_data.reset_index(drop=True, inplace=True)
 
     # Add headers:
-    input_data.columns = ['Slots', 'Rows']
+    input_data.columns = ['Rows', 'Slots']
 
     # Convert to integer:
     input_data = input_data.astype(int)
