@@ -7,14 +7,15 @@ def matrix_maker(info_line, unavailable):
     """ Create numpy matrix with 0s and unavailable slots with 1st and 2nd line as args"""
 
     # Numpy 0 matrix for rows + cols ; 1 = unavailable
-    server_matrix = np.zeros((info_line.iloc[0], info_line.iloc[1]))  # Shape = (16, 100)
+    server_matrix = np.ones((info_line.iloc[0], info_line.iloc[1]))  # Shape = (16, 100)
 
     # For loop for all unavailable:
     for i in range(0, info_line.iloc[2]):
 
         # Change unavailable to 1:
-        server_matrix[unavailable.iloc[i][0]][unavailable.iloc[i][1]] = 1
+        server_matrix[unavailable.iloc[i][0]][unavailable.iloc[i][1]] = 0
 
+    print(server_matrix[9])
     return server_matrix
 
 
@@ -51,8 +52,6 @@ def data_parser():
 
     # Create numpy matrix:
     dc_matrix = matrix_maker(info_line, unavailable)
-
-
 
 
 if __name__ == "__main__":
