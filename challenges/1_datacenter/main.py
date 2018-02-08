@@ -1,6 +1,17 @@
 # Google Hash Code: Data Center
 import numpy as np
 import pandas as pd
+import itertools
+
+
+def server_combo(row, data):
+    """ Parse row spaces to give all possible combos of server for the row. """
+
+    for space in row:
+        numbers = data['Size']
+        result = [seq for i in range(len(numbers), 0, -1) for seq in itertools.combinations(numbers, i) if sum(seq) == space]
+        print(space)
+        print(result)
 
 def space_trix(server_matrix):
     """ Calculate space available in each row in a 2D Array"""
@@ -22,11 +33,10 @@ def space_trix(server_matrix):
         # Add spaces available in row to general array:
         row_space_available.append(space)
 
-        # Cleans up memory
+        # Cleans up memory:
         del space
 
-    print(row_space_available)
-    print(server_matrix[2])
+    return row_space_available
 
 
 def matrix_maker(info_line, unavailable):
@@ -71,24 +81,23 @@ def data_parser():
     # Redefine input_data with servers to be placed and reset index:
     input_data = input_data.iloc[info_line[2]:]
     input_data.reset_index(drop=True, inplace=True)
+    input_data['Order'] = input_data.index
 
     # Create numpy matrix:
     dc_matrix = matrix_maker(info_line, unavailable)
 
     # Spacing in the matrix:
-    space_trix(dc_matrix)
+    rows_space_available = space_trix(dc_matrix)
 
-    print(input_data['Size'].value_counts())
-    # 3
-    # 135
-    # 5
-    # 126
-    # 2
-    # 126
-    # 4
-    # 125
-    # 1
-    # 113
+    for row in rows_space_available:
+        server_combo(row, input_data)
+
+    # 3 135
+    # 5 126
+    # 2 126
+    # 4 125
+    # 1 113
+
 
 if __name__ == "__main__":
     data_parser()
